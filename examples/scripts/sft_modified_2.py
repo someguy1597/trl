@@ -79,6 +79,7 @@ if __name__ == "__main__":
         #device_map="auto",
         quantization_config=quantization_config,
     )
+    print(training_args)
     #training_args.model_init_kwargs = model_kwargs
     #tokenizer = AutoTokenizer.from_pretrained(
         #model_config.model_name_or_path, trust_remote_code=model_config.trust_remote_code, use_fast=True
@@ -97,14 +98,15 @@ if __name__ == "__main__":
         #model_config.model_name_or_path,  # from model_config
         #**model_kwargs  # unpack model_kwargs to pass other arguments
     #)
-    print("model_config.model_name_or_path:", model_config.model_name_or_path)
-    print("model_kwargs:", model_kwargs)
+    #print("model_config.model_name_or_path:", model_config.model_name_or_path)
+    #print("model_kwargs:", model_kwargs)
     #if quantization_config is not None:
         #from peft import prepare_model_for_kbit_training
         #model = prepare_model_for_kbit_training(model)
     ################
     # Training
     ################
+    """
     trainer = SFTTrainer(
         model=model,
         args=training_args,
@@ -115,8 +117,9 @@ if __name__ == "__main__":
     )
 
     trainer.train()
+    """
 
     # Save and push to hub
-    trainer.save_model(training_args.output_dir)
+"""    trainer.save_model(training_args.output_dir)
     if training_args.push_to_hub:
-        trainer.push_to_hub()
+        trainer.push_to_hub()"""
