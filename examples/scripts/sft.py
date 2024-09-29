@@ -74,15 +74,15 @@ if __name__ == "__main__":
         trust_remote_code=model_config.trust_remote_code,
         attn_implementation=model_config.attn_implementation,
         torch_dtype=model_config.torch_dtype,
-        #use_cache=False if training_args.gradient_checkpointing else True,
-        #device_map=get_kbit_device_map() if quantization_config is not None else None,
+        use_cache=False if training_args.gradient_checkpointing else True,
+        device_map=get_kbit_device_map() if quantization_config is not None else None,
         #device_map="auto",
         quantization_config=quantization_config,
     )
-    print("script_args: ", script_args)
-    print("training_args: ", training_args)
-    print("model_config: ", model_config)
-    print("model_kwargs: ", model_kwargs)
+    #print("script_args: ", script_args)
+    #print("training_args: ", training_args)
+    #print("model_config: ", model_config)
+    #print("model_kwargs: ", model_kwargs)
 
     
 
@@ -104,7 +104,6 @@ if __name__ == "__main__":
         model_config.model_name_or_path,  # from model_config
         **model_kwargs  # unpack model_kwargs to pass other arguments
     )
-"""
 
     #if quantization_config is not None:
         #from peft import prepare_model_for_kbit_training
@@ -127,4 +126,3 @@ if __name__ == "__main__":
     trainer.save_model(training_args.output_dir)
     if training_args.push_to_hub:
         trainer.push_to_hub()
-"""
