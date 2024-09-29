@@ -85,7 +85,7 @@ if __name__ == "__main__":
     print("model_kwargs: ", model_kwargs)
 
     
-"""
+
     #training_args.model_init_kwargs = model_kwargs
     tokenizer = AutoTokenizer.from_pretrained(
         model_config.model_name_or_path, trust_remote_code=model_config.trust_remote_code, use_fast=True
@@ -104,6 +104,8 @@ if __name__ == "__main__":
         model_config.model_name_or_path,  # from model_config
         **model_kwargs  # unpack model_kwargs to pass other arguments
     )
+"""
+
     #if quantization_config is not None:
         #from peft import prepare_model_for_kbit_training
         #model = prepare_model_for_kbit_training(model)
