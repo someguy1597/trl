@@ -79,13 +79,13 @@ if __name__ == "__main__":
         #device_map="auto",
         quantization_config=quantization_config,
     )
-    #print("script_args: ", script_args)
-    #print("training_args: ", training_args)
-    #print("model_config: ", model_config)
-    #print("model_kwargs: ", model_kwargs)
+    print("script_args: ", script_args)
+    print("training_args: ", training_args)
+    print("model_config: ", model_config)
+    print("model_kwargs: ", model_kwargs)
 
     
-
+"""
     #training_args.model_init_kwargs = model_kwargs
     tokenizer = AutoTokenizer.from_pretrained(
         model_config.model_name_or_path, trust_remote_code=model_config.trust_remote_code, use_fast=True
@@ -125,3 +125,4 @@ if __name__ == "__main__":
     trainer.save_model(training_args.output_dir)
     if training_args.push_to_hub:
         trainer.push_to_hub()
+"""
