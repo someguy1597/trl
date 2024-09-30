@@ -75,7 +75,7 @@ if __name__ == "__main__":
         torch_dtype=model_config.torch_dtype,
         use_cache=False if training_args.gradient_checkpointing else True,
         #device_map=get_kbit_device_map() if quantization_config is not None else None,
-        #device_map="auto",
+        device_map="auto",
         quantization_config=quantization_config,
     )
     print("script_args: ", script_args)
