@@ -74,14 +74,14 @@ if __name__ == "__main__":
         attn_implementation=model_config.attn_implementation,
         torch_dtype=model_config.torch_dtype,
         use_cache=False if training_args.gradient_checkpointing else True,
-        #device_map=get_kbit_device_map() if quantization_config is not None else None,
-        device_map="auto",
+        device_map=get_kbit_device_map() if quantization_config is not None else None,
+        #device_map="auto",
         quantization_config=quantization_config,
     )
-    print("script_args: ", script_args)
-    print("training_args: ", training_args)
-    print("model_config: ", model_config)
-    print("model_kwargs: ", model_kwargs)
+    #print("script_args: ", script_args)
+    #print("training_args: ", training_args)
+    #print("model_config: ", model_config)
+    #print("model_kwargs: ", model_kwargs)
 
 
 
@@ -102,13 +102,12 @@ if __name__ == "__main__":
     ################
     model = AutoModelForCausalLM.from_pretrained(
         model_config.model_name_or_path,  # from model_config
-        #device_map = "auto",
         **model_kwargs  # unpack model_kwargs to pass other arguments
         )
 
-    if quantization_config is not None:
-        from peft import prepare_model_for_kbit_training
-        model = prepare_model_for_kbit_training(model)
+    #if quantization_config is not None:
+        #from peft import prepare_model_for_kbit_training
+        #model = prepare_model_for_kbit_training(model)
     ################
     # Training
     ################
