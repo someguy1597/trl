@@ -105,8 +105,8 @@ model_config.model_name_or_path,  # from model_config
 )
 
 if quantization_config is not None:
-from peft import prepare_model_for_kbit_training
-model = prepare_model_for_kbit_training(model)
+    from peft import prepare_model_for_kbit_training
+    model = prepare_model_for_kbit_training(model)
 ################
 # Training
 ################
