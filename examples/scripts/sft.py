@@ -79,10 +79,10 @@ if __name__ == "__main__":
         #device_map="auto",
         quantization_config=quantization_config,
     )
-    #print("script_args: ", script_args)
-    #print("training_args: ", training_args)
-    #print("model_config: ", model_config)
-    #print("model_kwargs: ", model_kwargs)
+    print("script_args: ", script_args)
+    print("training_args: ", training_args)
+    print("model_config: ", model_config)
+    print("model_kwargs: ", model_kwargs)
 
     
 
