@@ -64,7 +64,8 @@ from trl import (
 if __name__ == "__main__":
     parser = TrlParser((SFTScriptArguments, SFTConfig, ModelConfig))
     script_args, training_args, model_config = parser.parse_args_and_config()
-
+    training_args._n_gpu=2
+    #print("training_args:", training_args)
     ################
     # Model init kwargs & Tokenizer
     ################
@@ -79,7 +80,7 @@ if __name__ == "__main__":
         #device_map="auto",
         quantization_config=quantization_config,
     )
-    print(training_args)
+    
     #training_args.model_init_kwargs = model_kwargs
     #tokenizer = AutoTokenizer.from_pretrained(
         #model_config.model_name_or_path, trust_remote_code=model_config.trust_remote_code, use_fast=True
