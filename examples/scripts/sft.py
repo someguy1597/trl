@@ -61,67 +61,68 @@ from trl import (
 )
 
 
-#if __name__ == "__main__":
-parser = TrlParser((SFTScriptArguments, SFTConfig, ModelConfig))
-script_args, training_args, model_config = parser.parse_args_and_config()
-################
-# Model init kwargs & Tokenizer
-################
-quantization_config = get_quantization_config(model_config)
-model_kwargs = dict(
-    revision=model_config.model_revision,
-    trust_remote_code=model_config.trust_remote_code,
-    attn_implementation=model_config.attn_implementation,
-    torch_dtype=model_config.torch_dtype,
-    use_cache=False if training_args.gradient_checkpointing else True,
-    device_map=get_kbit_device_map() if quantization_config is not None else None,
-    #device_map="auto",
-    quantization_config=quantization_config,
-)
-#print("script_args: ", script_args)
-#print("training_args: ", training_args)
-#print("model_config: ", model_config)
-#print("model_kwargs: ", model_kwargs)
-
-
-
-#training_args.model_init_kwargs = model_kwargs
-tokenizer = AutoTokenizer.from_pretrained(
-model_config.model_name_or_path, trust_remote_code=model_config.trust_remote_code, use_fast=True
-)
-tokenizer.pad_token = tokenizer.eos_token
-
-################
-# Dataset
-################
-dataset = load_dataset(script_args.dataset_name)
-
-################
-# Model
-################
-model = AutoModelForCausalLM.from_pretrained(
-    model_config.model_name_or_path,  # from model_config
-    **model_kwargs  # unpack model_kwargs to pass other arguments
+if __name__ == "__main__":
+    parser = TrlParser((SFTScriptArguments, SFTConfig, ModelConfig))
+    script_args, training_args, model_config = parser.parse_args_and_config()
+    ################
+    # Model init kwargs & Tokenizer
+    ################
+    quantization_config = get_quantization_config(model_config)
+    model_kwargs = dict(
+        revision=model_config.model_revision,
+        trust_remote_code=model_config.trust_remote_code,
+        attn_implementation=model_config.attn_implementation,
+        torch_dtype=model_config.torch_dtype,
+        use_cache=False if training_args.gradient_checkpointing else True,
+        device_map=get_kbit_device_map() if quantization_config is not None else None,
+        #device_map="auto",
+        quantization_config=quantization_config,
     )
+    #print("script_args: ", script_args)
+    #print("training_args: ", training_args)
+    #print("model_config: ", model_config)
+    #print("model_kwargs: ", model_kwargs)
 
-if quantization_config is not None:
-    from peft import prepare_model_for_kbit_training
-    model = prepare_model_for_kbit_training(model)
-################
-# Training
-################
-trainer = SFTTrainer(
-    model=model,
-    args=training_args,
-    train_dataset=dataset[script_args.dataset_train_split],
-    eval_dataset=dataset[script_args.dataset_test_split],
-    tokenizer=tokenizer,
-    peft_config=get_peft_config(model_config),
-    )
 
-trainer.train()
 
-# Save and push to hub
-trainer.save_model(training_args.output_dir)
-if training_args.push_to_hub:
-    trainer.push_to_hub()
+    #training_args.model_init_kwargs = model_kwargs
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_config.model_name_or_path,
+        trust_remote_code=model_config.trust_remote_code, use_fast=True
+        )
+    tokenizer.pad_token = tokenizer.eos_token
+
+    ################
+    # Dataset
+    ################
+    dataset = load_dataset(script_args.dataset_name)
+
+    ################
+    # Model
+    ################
+    model = AutoModelForCausalLM.from_pretrained(
+        model_config.model_name_or_path,  # from model_config
+        **model_kwargs  # unpack model_kwargs to pass other arguments
+        )
+
+    if quantization_config is not None:
+        from peft import prepare_model_for_kbit_training
+        model = prepare_model_for_kbit_training(model)
+    ################
+    # Training
+    ################
+    trainer = SFTTrainer(
+        model=model,
+        args=training_args,
+        train_dataset=dataset[script_args.dataset_train_split],
+        eval_dataset=dataset[script_args.dataset_test_split],
+        tokenizer=tokenizer,
+        peft_config=get_peft_config(model_config),
+        )
+
+    trainer.train()
+
+    # Save and push to hub
+    trainer.save_model(training_args.output_dir)
+    if training_args.push_to_hub:
+        trainer.push_to_hub()
