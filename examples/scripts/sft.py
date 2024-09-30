@@ -100,9 +100,9 @@ dataset = load_dataset(script_args.dataset_name)
 # Model
 ################
 model = AutoModelForCausalLM.from_pretrained(
-model_config.model_name_or_path,  # from model_config
-**model_kwargs  # unpack model_kwargs to pass other arguments
-)
+    model_config.model_name_or_path,  # from model_config
+    **model_kwargs  # unpack model_kwargs to pass other arguments
+    )
 
 if quantization_config is not None:
     from peft import prepare_model_for_kbit_training
@@ -111,17 +111,17 @@ if quantization_config is not None:
 # Training
 ################
 trainer = SFTTrainer(
-model=model,
-args=training_args,
-train_dataset=dataset[script_args.dataset_train_split],
-eval_dataset=dataset[script_args.dataset_test_split],
-tokenizer=tokenizer,
-peft_config=get_peft_config(model_config),
-)
+    model=model,
+    args=training_args,
+    train_dataset=dataset[script_args.dataset_train_split],
+    eval_dataset=dataset[script_args.dataset_test_split],
+    tokenizer=tokenizer,
+    peft_config=get_peft_config(model_config),
+    )
 
 trainer.train()
 
 # Save and push to hub
 trainer.save_model(training_args.output_dir)
 if training_args.push_to_hub:
-trainer.push_to_hub()
+    trainer.push_to_hub()
