@@ -104,6 +104,8 @@ if __name__ == "__main__":
         model_config.model_name_or_path,  # from model_config
         **model_kwargs  # unpack model_kwargs to pass other arguments
         )
+    from time import time.sleep
+    sleep(60)
 """
     #if quantization_config is not None:
         #from peft import prepare_model_for_kbit_training
