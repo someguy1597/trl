@@ -83,7 +83,7 @@ def train(command_name):
     console = Console()
     # Make sure to import things locally to avoid verbose from third party libs.
     with console.status("[bold purple]Welcome! Initializing the TRL CLI..."):
-        from trl.commands.cli_utils import init_zero_verbose
+        #from trl.commands.cli_utils import init_zero_verbose
 
         #init_zero_verbose()
         command_name = sys.argv[1]
@@ -92,6 +92,7 @@ def train(command_name):
         print("trl_examples_dir: ", trl_examples_dir)
 
     command = f"accelerate launch {trl_examples_dir}/scripts/{command_name}.py {' '.join(sys.argv[2:])}"
+    print("command: ", command)
 
     try:
         subprocess.run(
@@ -101,8 +102,11 @@ def train(command_name):
             encoding="utf-8",
             cwd=os.getcwd(),
             env=os.environ.copy(),
-            capture_output=True,
+            capture_output=False,
         )
+        # Print the captured stdout and stderr
+        #console.log(f"Command output (stdout): {result.stdout}")
+        #console.log(f"Command error output (stderr): {result.stderr}")
     except (CalledProcessError, ChildProcessError) as exc:
         console.log(f"TRL - {command_name.upper()} failed on ! See the logs above for further details.")
         raise ValueError("TRL CLI failed! Check the traceback above..") from exc
