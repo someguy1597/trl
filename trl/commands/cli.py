@@ -85,9 +85,11 @@ def train(command_name):
     with console.status("[bold purple]Welcome! Initializing the TRL CLI..."):
         from trl.commands.cli_utils import init_zero_verbose
 
-        init_zero_verbose()
+        #init_zero_verbose()
         command_name = sys.argv[1]
+        print("command_name: ", command_name)
         trl_examples_dir = os.path.dirname(__file__)
+        print("trl_examples_dir: ", trl_examples_dir)
 
     command = f"accelerate launch {trl_examples_dir}/scripts/{command_name}.py {' '.join(sys.argv[2:])}"
 
