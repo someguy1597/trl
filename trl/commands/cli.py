@@ -93,15 +93,18 @@ def train(command_name):
 
 
     try:
-        subprocess.run(
+        result = subprocess.run(
             command.split(),
             text=True,
             check=True,
             encoding="utf-8",
             cwd=os.getcwd(),
             env=os.environ.copy(),
-            capture_output=False,
+            capture_output=True,
         )
+        # Print the captured stdout and stderr
+        console.log(f"Command output (stdout): {result.stdout}")
+        console.log(f"Command error output (stderr): {result.stderr}")
     except (CalledProcessError, ChildProcessError) as exc:
         console.log(f"TRL - {command_name.upper()} failed on ! See the logs above for further details.")
         raise ValueError("TRL CLI failed! Check the traceback above..") from exc
