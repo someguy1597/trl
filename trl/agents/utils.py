@@ -274,7 +274,7 @@ def generate_agent_responses(
 
     while current_batch:
         # Generate outputs for the current batch.
-        outputs = llm.generate(current_batch, sampling_params, use_tqdm=False)
+        outputs = llm.generate(current_batch, sampling_params, use_tqdm=True)
         next_batch = []  # To store chats that still need code execution.
 
         # Process each output in the batch.
