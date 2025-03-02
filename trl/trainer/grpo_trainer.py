@@ -71,7 +71,7 @@ if is_wandb_available():
     import wandb
 
 if is_langchain_experimental_available() and is_vllm_available():
-    from ..agents.utils import LocalExecutor, generate_agent_responses
+    from ..agents.utils import generate_agent_responses
 
 # What we call a reward function is a callable that takes a list of prompts and completions and returns a list of
 # rewards. When it's a string, it's a model ID, so it's loaded as a pretrained model.
@@ -380,10 +380,14 @@ class GRPOTrainer(Trainer):
             return features
 
         # set code executer to LocalExecuter if available and undefined
-        if code_executer is None and is_langchain_experimental_available():
+        if code_executer is not None:
+            self.code_executer = code_executer
+        elif is_langchain_experimental_available():
+            from ..agents.utils import LocalExecutor
+
             self.code_executer = LocalExecutor()
         else:
-            self.code_executer = code_executer
+            self.code_executer = None
 
         # Training arguments
         self.max_prompt_length = args.max_prompt_length
