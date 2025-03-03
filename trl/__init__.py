@@ -105,6 +105,7 @@ _import_structure = {
     "trainer.utils": ["get_kbit_device_map", "get_peft_config", "get_quantization_config"],
     "agents": [
         "E2BExecutor",
+        "AsyncE2BExecutor",
         "LocalExecutor",
         "prepare_data_for_e2b_agent",
         "prepare_data_for_local_agent",
@@ -133,6 +134,7 @@ else:
 if TYPE_CHECKING:
     from .agents import (
         E2BExecutor,
+        AsyncE2BExecutor,
         LocalExecutor,
         generate_agent_responses,
         get_code,
