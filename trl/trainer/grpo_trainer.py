@@ -42,6 +42,7 @@ from transformers import (
 from transformers.integrations.deepspeed import is_deepspeed_zero3_enabled
 from transformers.utils import is_liger_kernel_available, is_peft_available
 
+from ..agents.environments import Environment, VLLMGenerationConfig
 from ..data_utils import apply_chat_template, is_conversational, maybe_apply_chat_template
 from ..extras.profiling import profiling_context, profiling_decorator
 from ..extras.vllm_client import VLLMClient
@@ -280,6 +281,7 @@ class GRPOTrainer(Trainer):
         self,
         model: Union[str, PreTrainedModel],
         reward_funcs: Union[RewardFunc, list[RewardFunc]],
+        environment: Optional[Environment] = None,
         args: Optional[GRPOConfig] = None,
         train_dataset: Optional[Union[Dataset, IterableDataset]] = None,
         eval_dataset: Optional[Union[Dataset, IterableDataset, dict[str, Union[Dataset, IterableDataset]]]] = None,
@@ -323,6 +325,9 @@ class GRPOTrainer(Trainer):
                     "You passed `model_init_kwargs` to the `GRPOConfig`, but your model is already instantiated. "
                     "This argument can only be used when the `model` argument is a string."
                 )
+            
+        # Initialize the default environment if none provided
+        self.environment = environment or Environment()
 
         if peft_config is not None:
             if not is_peft_available():
@@ -763,16 +768,19 @@ class GRPOTrainer(Trainer):
                 # prompt individually.
                 ordered_set_of_prompts = all_prompts_text[:: self.num_generations]
                 with profiling_context(self, "vLLM.generate"):
-                    completion_ids = self.vllm_client.generate(
+                    completion_ids = self.environment.generate(
+                        vllm_client=self.vllm_client,
                         prompts=ordered_set_of_prompts,
-                        n=self.num_generations,
-                        repetition_penalty=self.repetition_penalty,
-                        temperature=self.temperature,
-                        top_p=self.top_p,
-                        top_k=-1 if self.top_k is None else self.top_k,
-                        min_p=0.0 if self.min_p is None else self.min_p,
-                        max_tokens=self.max_completion_length,
-                        guided_decoding_regex=self.guided_decoding_regex,
+                        generation_config=VLLMGenerationConfig(
+                            num_generations=self.num_generations,
+                            repetition_penalty=self.repetition_penalty,
+                            temperature=self.temperature,
+                            top_p=self.top_p,
+                            top_k=-1 if self.top_k is None else self.top_k,
+                            min_p=0.0 if self.min_p is None else self.min_p,
+                            max_tokens=self.max_completion_length,
+                            guided_decoding_regex=self.guided_decoding_regex,
+                        )
                     )
             else:
                 completion_ids = [None] * len(all_prompts_text)
