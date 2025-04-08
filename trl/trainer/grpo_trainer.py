@@ -737,10 +737,13 @@ class GRPOTrainer(Trainer):
     ) -> dict[str, Union[torch.Tensor, Any]]:
         device = self.accelerator.device
         prompts = [x["prompt"] for x in inputs]
+        print("DEBUG: prompts:", prompts)  # <-- new debug statement
         prompts_text = [maybe_apply_chat_template(example, self.processing_class)["prompt"] for example in inputs]
+        print("DEBUG: prompts_text:", prompts_text)  # <-- new debug statement
         prompt_inputs = self.processing_class(
             text=prompts_text, return_tensors="pt", padding=True, padding_side="left", add_special_tokens=False
         )
+        print("DEBUG: prompt_inputs:", prompt_inputs)  # <-- new debug statement
         prompt_inputs = super()._prepare_inputs(prompt_inputs)
         prompt_ids, prompt_mask = prompt_inputs["input_ids"], prompt_inputs["attention_mask"]
 
@@ -757,11 +760,13 @@ class GRPOTrainer(Trainer):
 
             # Generate completions using vLLM: gather all prompts and use them in a single call in the main process
             all_prompts_text = gather_object(prompts_text)
+            print("DEBUG: all_prompts_text:", all_prompts_text)  # <-- new debug statement
             if self.accelerator.is_main_process:
                 # Since 'prompts' contains 'num_generations' duplicates, we first take unique prompts, and generate
                 # num_generations outputs for each one. This is faster than generating outputs for each duplicate
                 # prompt individually.
                 ordered_set_of_prompts = all_prompts_text[:: self.num_generations]
+                print("DEBUG: ordered_set_of_prompts:", ordered_set_of_prompts)  # <-- new debug statement
                 with profiling_context(self, "vLLM.generate"):
                     completion_ids = self.vllm_client.generate(
                         prompts=ordered_set_of_prompts,
@@ -774,6 +779,7 @@ class GRPOTrainer(Trainer):
                         max_tokens=self.max_completion_length,
                         guided_decoding_regex=self.guided_decoding_regex,
                     )
+                    print("DEBUG: completion_ids:", completion_ids)  # <-- new debug statement
             else:
                 completion_ids = [None] * len(all_prompts_text)
             # Broadcast the completions from the main process to all processes, ensuring each process receives its
