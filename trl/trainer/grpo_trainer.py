@@ -42,7 +42,7 @@ from transformers import (
 from transformers.integrations.deepspeed import is_deepspeed_zero3_enabled
 from transformers.utils import is_liger_kernel_available, is_peft_available
 
-from ..agents.environments import Environment, VLLMGenerationConfig
+from ..agents.environments import Environment, VLLMClientGenerationConfig
 from ..data_utils import apply_chat_template, is_conversational, maybe_apply_chat_template
 from ..extras.profiling import profiling_context, profiling_decorator
 from ..extras.vllm_client import VLLMClient
@@ -771,7 +771,7 @@ class GRPOTrainer(Trainer):
                     completion_ids = self.environment.generate(
                         vllm_client=self.vllm_client,
                         prompts=ordered_set_of_prompts,
-                        generation_config=VLLMGenerationConfig(
+                        generation_config=VLLMClientGenerationConfig(
                             num_generations=self.num_generations,
                             repetition_penalty=self.repetition_penalty,
                             temperature=self.temperature,
