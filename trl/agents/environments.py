@@ -4,7 +4,7 @@ from typing import List, Any, Optional
 @dataclass
 class VLLMClientGenerationConfig:
     """Configuration for VLLM client generation parameters"""
-    num_generations: int
+    n: int
     repetition_penalty: float
     temperature: float
     top_p: float

@@ -776,7 +776,7 @@ class GRPOTrainer(Trainer):
                         vllm_client=self.vllm_client,
                         prompts=ordered_set_of_prompts,
                         generation_config=VLLMClientGenerationConfig(
-                            num_generations=self.num_generations,
+                            n=self.num_generations,
                             repetition_penalty=self.repetition_penalty,
                             temperature=self.temperature,
                             top_p=self.top_p,
