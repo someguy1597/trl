@@ -762,11 +762,13 @@ class GRPOTrainer(Trainer):
 
             # Generate completions using vLLM: gather all prompts and use them in a single call in the main process
             all_prompts_text = gather_object(prompts_text)
+            print("DEBUG: all_prompts_text:", all_prompts_text)
             if self.accelerator.is_main_process:
                 # Since 'prompts' contains 'num_generations' duplicates, we first take unique prompts, and generate
                 # num_generations outputs for each one. This is faster than generating outputs for each duplicate
                 # prompt individually.
                 ordered_set_of_prompts = all_prompts_text[:: self.num_generations]
+                print("DEBUG: ordered_set_of_prompts:", ordered_set_of_prompts)
                 with profiling_context(self, "vLLM.generate"):
                     completion_ids = self.environment.generate(
                         vllm_client=self.vllm_client,
@@ -782,6 +784,7 @@ class GRPOTrainer(Trainer):
                             guided_decoding_regex=self.guided_decoding_regex,
                         )
                     )
+                    print("DEBUG: completion_ids:", completion_ids)
             else:
                 completion_ids = [None] * len(all_prompts_text)
             # Broadcast the completions from the main process to all processes, ensuring each process receives its
