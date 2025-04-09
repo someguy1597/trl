@@ -742,7 +742,7 @@ class GRPOTrainer(Trainer):
     ) -> dict[str, Union[torch.Tensor, Any]]:
         device = self.accelerator.device
         prompts = [x["prompt"] for x in inputs]
-        print("DEBUG: YO WHATS GOOD DAWG!")
+        print("DEBUG: NOTIN")
         #print("DEBUG: prompts:", prompts)
         prompts_text = [maybe_apply_chat_template(example, self.processing_class)["prompt"] for example in inputs]
         prompt_inputs = self.processing_class(
