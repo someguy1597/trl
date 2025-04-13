@@ -296,7 +296,7 @@ class GRPOTrainer(Trainer):
             model_name = model if isinstance(model, str) else model.config._name_or_path
             model_name = model_name.split("/")[-1]
             args = GRPOConfig(f"{model_name}-GRPO")
-
+        print("SUP")
         # Models
         # Trained model
         model_init_kwargs = args.model_init_kwargs or {}
